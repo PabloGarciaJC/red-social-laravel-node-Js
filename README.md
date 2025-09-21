@@ -10,7 +10,7 @@ Esta aplicación permite a los usuarios conectarse, chatear y compartir contenid
 
 [https://red-social-app.com/](https://red-social-app.pablogarciajc.com/)
 
-| ![RedSocial_1](https://pablogarciajc.com/wp-content/uploads/2025/01/red_social_1_webp.webp) | ![RedSocial_2](https://pablogarciajc.com/wp-content/uploads/2025/01/red_social_2_webp.webp) |
+| ![RedSocial_1](https://pablogarciajc.com/wp-content/uploads/2025/09/red-social-11_11.webp) | ![RedSocial_2](https://pablogarciajc.com/wp-content/uploads/2025/01/red_social_2_webp.webp) |
 |-----------|-----------|
 
 ## Funcionalidades Principales  
