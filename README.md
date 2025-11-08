@@ -6,13 +6,13 @@ Para el entorno frontend se utiliza **Node.js** junto con **Laravel Mix** para c
 La plataforma ofrece chat instantáneo, publicación de contenido y una interfaz moderna y responsive.  
 La comunicación en tiempo real se implementa con **WebSockets** para ofrecer una experiencia fluida y dinámica.
 
-### Tecnologías utilizadas
+## Tecnologías utilizadas
+
 - **Laravel** (backend y lógica de negocio)
 - **Node.js** + **Laravel Mix** (compilación de assets)
 - **Bootstrap** + **Sass** (estilos)
 - **JavaScript** (interactividad)
 - **WebSockets** (interacción en tiempo real)
-
 
 ## Demo del Proyecto
 

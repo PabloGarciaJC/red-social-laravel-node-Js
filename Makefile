@@ -9,7 +9,7 @@ DOCKER_COMPOSE = docker compose -f ./.docker/docker-compose.yml
 ## ---------------------------------------------------------
 
 .PHONY: init-app
-init-app: | copy-env create-symlink up permissions migracion print-urls
+init-app: | copy-env create-symlink up permissions migracion npm-install print-urls
 
 .PHONY: copy-env
 copy-env:
@@ -26,11 +26,10 @@ create-symlink:
 
 .PHONY: migracion
 migracion:
-	@echo "⏳ Esperando a que MySQL esté disponible..."
+	@echo "Esperando a que MySQL esté disponible..."
 	@sleep 5  # Espera 5 segundos (ajustalo si es necesario)
 	$(DOCKER_COMPOSE) exec php_apache_red_social php artisan migrate --seed
 	@echo "Migraciones aplicadas!"
-
 
 .PHONY: print-urls
 print-urls:
@@ -84,7 +83,6 @@ shell:
 rollback:
 	$(DOCKER_COMPOSE) exec php_apache_red_social php artisan migrate:rollback
 
-
 .PHONY: test
 test:
 	$(DOCKER_COMPOSE) exec php_apache_red_social php artisan test
@@ -111,4 +109,18 @@ force-commit:
 	git add -f .
 	git commit -m "Forzando subir todos los cambios"
 	git push origin master
+
+## ---------------------------------------------------------
+## Instalación NPM
+## ---------------------------------------------------------
+.PHONY: npm-install
+npm-install:
+	$(DOCKER_COMPOSE) exec php_apache_red_social npm install
+
+## ---------------------------------------------------------
+## Compila el proyecto
+## --------------------------------------------------------
+.PHONY: compile
+compile:
+	$(DOCKER_COMPOSE) exec php_apache_red_social npm run prod
 
