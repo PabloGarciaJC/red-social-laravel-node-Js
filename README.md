@@ -1,10 +1,18 @@
-# Red Social 
+# Red Social (Laravel + Node + JavaScript)
 
-**Red Social** es una plataforma diseñada para fomentar la comunicación e interacción social en tiempo real entre usuarios, utilizando **WebSocket** para una experiencia dinámica y fluida.
+**Red Social** es una aplicación desarrollada con **Laravel** en el backend, que permite la comunicación e interacción en tiempo real entre usuarios.  
+Para el entorno frontend se utiliza **Node.js** junto con **Laravel Mix** para compilar estilos y scripts.
 
-El proyecto combina funcionalidades modernas con un diseño intuitivo, aplicando buenas prácticas para garantizar seguridad, escalabilidad y rendimiento óptimo.
+La plataforma ofrece chat instantáneo, publicación de contenido y una interfaz moderna y responsive.  
+La comunicación en tiempo real se implementa con **WebSockets** para ofrecer una experiencia fluida y dinámica.
 
-Esta aplicación permite a los usuarios conectarse, chatear y compartir contenido instantáneamente, simulando una red social moderna y responsive.
+### Tecnologías utilizadas
+- **Laravel** (backend y lógica de negocio)
+- **Node.js** + **Laravel Mix** (compilación de assets)
+- **Bootstrap** + **Sass** (estilos)
+- **JavaScript** (interactividad)
+- **WebSockets** (interacción en tiempo real)
+
 
 ## Demo del Proyecto
 

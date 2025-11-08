@@ -1,4 +1,5 @@
 {
+    "name": "red-social-laravel",
     "private": true,
     "scripts": {
         "dev": "npm run development",
