@@ -96,13 +96,6 @@ test:
 ## ---------------------------------------------------------
 ## Limpieza de cache
 ## ---------------------------------------------------------
-.PHONY: clean-cache
-clean-cache:
-	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "rm -rf $(APP_DIR)/storage/framework/cache/data/* $(APP_DIR)/bootstrap/cache/*"
-
-
-
-
 .PHONY: clean-docker
 clean-docker:
 	sudo docker rmi -f $$(sudo docker images -q) || true
