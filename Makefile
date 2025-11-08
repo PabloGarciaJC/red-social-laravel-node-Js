@@ -10,7 +10,7 @@ APP_DIR = /var/www/html
 ## ---------------------------------------------------------
 
 .PHONY: init-app
-init-app: copy-env create-symlink up composer-install migracion npm-install compile print-urls
+init-app: copy-env create-symlink up composer-install migracion npm-install compile permissions print-urls
 
 .PHONY: copy-env
 copy-env:
@@ -42,6 +42,11 @@ npm-install:
 .PHONY: compile
 compile:
 	$(DOCKER_COMPOSE) exec php_apache_red_social npm run production
+
+.PHONY: permissions
+permissions:
+	@echo "🔧 Ajustando permisos para Laravel..."
+	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "cd $(APP_DIR) && chmod -R 775 storage bootstrap/cache && chown -R www-data:www-data storage bootstrap/cache"
 
 .PHONY: print-urls
 print-urls:
