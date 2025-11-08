@@ -3,33 +3,49 @@
 ## ---------------------------------------------------------
 
 DOCKER_COMPOSE = docker compose -f ./.docker/docker-compose.yml
+APP_DIR = /var/www/html
 
 ## ---------------------------------------------------------
 ## Inicialización de la Aplicación
 ## ---------------------------------------------------------
 
 .PHONY: init-app
-init-app: | copy-env create-symlink up permissions migracion npm-install print-urls
+init-app: copy-env create-symlink up prepare-storage composer-install migracion npm-install compile print-urls
 
 .PHONY: copy-env
 copy-env:
 	@ [ ! -f .env ] && cp .env.example .env || true
 
-.PHONY: permissions
-permissions:
-	$(DOCKER_COMPOSE) exec php_apache_red_social chmod 777 -R storage
-	$(DOCKER_COMPOSE) exec php_apache_red_social chmod 777 -R bootstrap
-
 .PHONY: create-symlink
 create-symlink:
 	@ [ -L .docker/.env ] || ln -s ../.env .docker/.env
 
+.PHONY: up
+up:
+	$(DOCKER_COMPOSE) up -d
+
+.PHONY: prepare-storage
+prepare-storage:
+	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "mkdir -p $(APP_DIR)/storage/framework/{cache,data,sessions,views} $(APP_DIR)/storage/logs && chmod -R 777 $(APP_DIR)/storage $(APP_DIR)/bootstrap"
+
+.PHONY: composer-install
+composer-install:
+	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "cd $(APP_DIR) && composer install --no-interaction --prefer-dist"
+
 .PHONY: migracion
 migracion:
-	@echo "Esperando a que MySQL esté disponible..."
-	@sleep 5  # Espera 5 segundos (ajustalo si es necesario)
-	$(DOCKER_COMPOSE) exec php_apache_red_social php artisan migrate --seed
+	@echo "⏳ Esperando a que MySQL esté disponible..."
+	@sleep 5
+	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "cd $(APP_DIR) && php artisan migrate --seed"
 	@echo "Migraciones aplicadas!"
+
+.PHONY: npm-install
+npm-install:
+	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "cd $(APP_DIR) && npm install"
+
+.PHONY: compile
+compile:
+	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "cd $(APP_DIR) && npm run build"
 
 .PHONY: print-urls
 print-urls:
@@ -37,12 +53,8 @@ print-urls:
 	@echo "## Acceso a PhpMyAdmin:      http://localhost:8082/"
 
 ## ---------------------------------------------------------
-## Gestión de Contenedores
+## Gestión de contenedores
 ## ---------------------------------------------------------
-
-.PHONY: up
-up:
-	$(DOCKER_COMPOSE) up -d
 
 .PHONY: down
 down:
@@ -68,59 +80,30 @@ build:
 stop:
 	$(DOCKER_COMPOSE) stop
 
-.PHONY: clean-docker
-clean-docker:
-	sudo docker stop $$(sudo docker ps -q) || true
-	sudo docker rm $$(sudo docker ps -a -q) || true
-	sudo docker rmi -f $$(sudo docker images -q) || true
-	sudo docker volume rm $$(sudo docker volume ls -q) || true
-
 .PHONY: shell
 shell:
-	$(DOCKER_COMPOSE) exec --user pablogarciajc php_apache_red_social  /bin/sh -c "cd /var/www/html/; exec bash -l"
+	$(DOCKER_COMPOSE) exec --user pablogarciajc php_apache_red_social /bin/sh -c "cd $(APP_DIR); exec bash -l"
 
 .PHONY: rollback
 rollback:
-	$(DOCKER_COMPOSE) exec php_apache_red_social php artisan migrate:rollback
+	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "cd $(APP_DIR) && php artisan migrate:rollback"
 
 .PHONY: test
 test:
-	$(DOCKER_COMPOSE) exec php_apache_red_social php artisan test
+	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "cd $(APP_DIR) && php artisan test"
 
 ## ---------------------------------------------------------
-## Limpieza y Shell
+## Limpieza de cache
 ## ---------------------------------------------------------
 .PHONY: clean-cache
 clean-cache:
-	sudo rm -rf storage/framework/cache/data/*
-	sudo rm -rf bootstrap/cache/*
+	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "rm -rf $(APP_DIR)/storage/framework/cache/data/* $(APP_DIR)/bootstrap/cache/*"
+
+
+
 
 .PHONY: clean-docker
 clean-docker:
 	sudo docker rmi -f $$(sudo docker images -q) || true
 	sudo docker volume rm $$(sudo docker volume ls -q) || true
 	sudo docker network prune -f || true
-
-## ---------------------------------------------------------
-## Git (Forzar commit)
-## ---------------------------------------------------------
-.PHONY: force-commit
-force-commit:
-	git add -f .
-	git commit -m "Forzando subir todos los cambios"
-	git push origin master
-
-## ---------------------------------------------------------
-## Instalación NPM
-## ---------------------------------------------------------
-.PHONY: npm-install
-npm-install:
-	$(DOCKER_COMPOSE) exec php_apache_red_social npm install
-
-## ---------------------------------------------------------
-## Compila el proyecto
-## --------------------------------------------------------
-.PHONY: compile
-compile:
-	$(DOCKER_COMPOSE) exec php_apache_red_social npm run prod
-
