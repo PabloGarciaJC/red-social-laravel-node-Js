@@ -10,7 +10,7 @@ APP_DIR = /var/www/html
 ## ---------------------------------------------------------
 
 .PHONY: init-app
-init-app: copy-env create-symlink up prepare-storage composer-install migracion npm-install compile print-urls
+init-app: copy-env create-symlink up composer-install migracion npm-install compile print-urls
 
 .PHONY: copy-env
 copy-env:
@@ -23,10 +23,6 @@ create-symlink:
 .PHONY: up
 up:
 	$(DOCKER_COMPOSE) up -d
-
-.PHONY: prepare-storage
-prepare-storage:
-	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "mkdir -p $(APP_DIR)/storage/framework/{cache,data,sessions,views} $(APP_DIR)/storage/logs && chmod -R 777 $(APP_DIR)/storage $(APP_DIR)/bootstrap"
 
 .PHONY: composer-install
 composer-install:
