@@ -45,7 +45,7 @@ npm-install:
 
 .PHONY: compile
 compile:
-	$(DOCKER_COMPOSE) exec php_apache_red_social bash -c "cd $(APP_DIR) && npm run build"
+	$(DOCKER_COMPOSE) exec php_apache_red_social npm run production
 
 .PHONY: print-urls
 print-urls:
